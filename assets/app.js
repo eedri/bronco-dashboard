@@ -177,14 +177,24 @@
     const doors = d.doors && d.doors !== "Both" ? `<span class="meta-tag">${doorsLabel(d.doors)}</span>` : "";
     const yearsLabel = summarizeYears(d.years);
     const slug = CATEGORY_SLUG[d.category] || "roof-racks";
-    const imgSrc = d.image || `assets/img/${slug}.svg`;
+    const illustration = `assets/img/${slug}.svg`;
+    // Prefer an explicit photo; otherwise derive a real product photo from an
+    // Amazon ASIN in the link. Anything that fails/loads tiny falls back to the
+    // illustration (see the img onerror/onload handlers below).
+    const asin = /amazon\.[a-z.]+\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i.exec(d.url || "");
+    const photo = d.image || (asin ? `https://images-na.ssl-images-amazon.com/images/P/${asin[1]}.01._SL500_.jpg` : null);
+    const imgSrc = photo || illustration;
+    const imgFallback =
+      `if(this.dataset.fb){this.classList.add('img-failed')}` +
+      `else{this.dataset.fb=1;this.src='${illustration}'}`;
 
     return `
       <article class="card">
         <div class="card-media" style="background:linear-gradient(150deg, ${grad[0]}, ${grad[1]});">
           <span class="card-media-fallback" aria-hidden="true">${icon}</span>
           <img class="card-photo" src="${imgSrc}" alt="${escapeHTML(catLabel(d.category))}" loading="lazy"
-               onerror="this.classList.add('img-failed')" />
+               onerror="${imgFallback}"
+               onload="if(this.naturalWidth<=2){${imgFallback}}" />
           <div class="badge-row">
             <span class="source-badge" style="background:${srcColor};">${srcLabel(d.source)}</span>
             ${pct > 0 ? `<span class="discount-badge">-${pct}%</span>` : ""}
