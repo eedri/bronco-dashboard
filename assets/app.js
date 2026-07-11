@@ -34,6 +34,23 @@
     "Social Deals": "📣",
   };
 
+  const CATEGORY_SLUG = {
+    "Roof Racks": "roof-racks",
+    "Rooftop Tents": "rooftop-tents",
+    "Awnings": "awnings",
+    "MOLLE & Storage": "molle-storage",
+    "Lighting": "lighting",
+    "Recovery Gear": "recovery-gear",
+    "Fridges & Power": "fridges-power",
+    "Air Compressors": "air-compressors",
+    "Armor & Protection": "armor-protection",
+    "Interior & Trim": "interior-trim",
+    "Cargo & Tire": "cargo-tire",
+    "Fuel & Water": "fuel-water",
+    "Steps & Ladders": "steps-ladders",
+    "Social Deals": "social-deals",
+  };
+
   const CATEGORY_GRADIENTS = {
     "Roof Racks": ["#3a3226", "#5a4a30"],
     "Rooftop Tents": ["#2d3a2f", "#3f5a45"],
@@ -65,7 +82,9 @@
   const catLabel = (c) => (LANG === "he" && window.CATEGORY_I18N.he[c]) || c;
   const srcLabel = (s) => (LANG === "he" && window.SOURCE_I18N.he[s]) || s;
   const doorsLabel = (d) => (LANG === "he" && window.DOORS_I18N.he[d]) || d;
-  const descText = (deal) => (LANG === "he" && window.DEAL_DESC_HE[deal.id]) || deal.description;
+  const descText = (deal) =>
+    (LANG === "he" && (deal.descriptionHe || (window.DEAL_DESC_HE && window.DEAL_DESC_HE[deal.id]))) ||
+    deal.description;
   const catChipLabel = (v) => (CATEGORY_ICONS[v] ? CATEGORY_ICONS[v] + " " : "") + catLabel(v);
   const srcChipLabel = (v) => srcLabel(v);
 
@@ -157,15 +176,19 @@
       : `<span class="meta-tag ship-no">🚫 ${t("shipsNo")}</span>`;
     const doors = d.doors && d.doors !== "Both" ? `<span class="meta-tag">${doorsLabel(d.doors)}</span>` : "";
     const yearsLabel = summarizeYears(d.years);
+    const slug = CATEGORY_SLUG[d.category] || "roof-racks";
+    const imgSrc = d.image || `assets/img/${slug}.svg`;
 
     return `
       <article class="card">
         <div class="card-media" style="background:linear-gradient(150deg, ${grad[0]}, ${grad[1]});">
+          <span class="card-media-fallback" aria-hidden="true">${icon}</span>
+          <img class="card-photo" src="${imgSrc}" alt="${escapeHTML(catLabel(d.category))}" loading="lazy"
+               onerror="this.classList.add('img-failed')" />
           <div class="badge-row">
             <span class="source-badge" style="background:${srcColor};">${srcLabel(d.source)}</span>
             ${pct > 0 ? `<span class="discount-badge">-${pct}%</span>` : ""}
           </div>
-          <span aria-hidden="true">${icon}</span>
         </div>
         <div class="card-body">
           <div class="card-cat">${catLabel(d.category)}</div>
@@ -180,7 +203,7 @@
           </div>
           <div class="card-foot">
             <div class="price-wrap">
-              <span class="price-now">${money(d.price)}</span>
+              <span class="price-now"${d.estimated ? ` title="${t("estimated")}"` : ""}>${d.estimated ? "≈ " : ""}${money(d.price)}</span>
               ${d.originalPrice && d.originalPrice > d.price ? `<span class="price-was">${money(d.originalPrice)}</span>` : ""}
             </div>
             <a class="buy-btn" href="${d.url}" target="_blank" rel="noopener noreferrer">${t("viewDeal")} ↗</a>

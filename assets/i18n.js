@@ -49,6 +49,7 @@ window.I18N = {
     resetFilters: "Reset filters",
     year: "Year",
     onSale: "On sale",
+    estimated: "Estimated price — confirm on the retailer's site",
     footer1:
       "BroncoDeals is an independent deal aggregator for 2021–2026 Ford Bronco overlanding gear. Prices and availability change — always confirm on the retailer's site.",
     footer2Pre:
@@ -94,6 +95,7 @@ window.I18N = {
     resetFilters: "איפוס מסננים",
     year: "שנה",
     onSale: "במבצע",
+    estimated: "מחיר משוער — לאמת באתר המוכר",
     footer1:
       "BroncoDeals הוא אתר עצמאי לאיסוף דילים על ציוד אוברלנד לפורד ברונקו 2021–2026. מחירים וזמינות משתנים — תמיד ודאו באתר המוכר.",
     footer2Pre:

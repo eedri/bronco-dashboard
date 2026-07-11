@@ -222,11 +222,16 @@ a { color: inherit; }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--orange) 45%, var(--border)); }
 
 .card-media {
-  height: 120px; position: relative; display: grid; place-items: center;
+  height: 150px; position: relative; display: grid; place-items: center;
   font-size: 3rem; overflow: hidden;
 }
-.card-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.12), transparent 60%); }
-.badge-row { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; z-index: 2; }
+.card-media::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.05), transparent 30%, rgba(0,0,0,.18)); }
+.card-media-fallback { position: absolute; inset: 0; display: grid; place-items: center; z-index: 0; }
+.card-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+  display: block; }
+.card-photo.img-failed { display: none; }
+.badge-row { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; z-index: 3; }
 .source-badge {
   font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px;
   padding: 4px 8px; border-radius: 999px; color: #fff; backdrop-filter: blur(2px);
