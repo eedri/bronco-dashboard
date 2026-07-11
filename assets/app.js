@@ -58,6 +58,17 @@
   );
   const PRICE_MAX = Math.ceil(Math.max(...DEALS.map((d) => d.price)) / 50) * 50;
 
+  /* ---- Language ---- */
+  let LANG = localStorage.getItem("bronco-lang") || "en";
+  const t = (key) =>
+    (window.I18N[LANG] && window.I18N[LANG][key]) || window.I18N.en[key] || key;
+  const catLabel = (c) => (LANG === "he" && window.CATEGORY_I18N.he[c]) || c;
+  const srcLabel = (s) => (LANG === "he" && window.SOURCE_I18N.he[s]) || s;
+  const doorsLabel = (d) => (LANG === "he" && window.DOORS_I18N.he[d]) || d;
+  const descText = (deal) => (LANG === "he" && window.DEAL_DESC_HE[deal.id]) || deal.description;
+  const catChipLabel = (v) => (CATEGORY_ICONS[v] ? CATEGORY_ICONS[v] + " " : "") + catLabel(v);
+  const srcChipLabel = (v) => srcLabel(v);
+
   /* ---- State ---- */
   const state = {
     search: "",
@@ -142,25 +153,25 @@
     const icon = CATEGORY_ICONS[d.category] || "🛻";
     const srcColor = SOURCE_COLORS[d.source] || "#666";
     const ship = d.shipsToIsrael
-      ? '<span class="meta-tag ship-yes">🇮🇱 Ships to Israel</span>'
-      : '<span class="meta-tag ship-no">🚫 Not to Israel</span>';
-    const doors = d.doors && d.doors !== "Both" ? `<span class="meta-tag">${d.doors}</span>` : "";
+      ? `<span class="meta-tag ship-yes">🇮🇱 ${t("shipsYes")}</span>`
+      : `<span class="meta-tag ship-no">🚫 ${t("shipsNo")}</span>`;
+    const doors = d.doors && d.doors !== "Both" ? `<span class="meta-tag">${doorsLabel(d.doors)}</span>` : "";
     const yearsLabel = summarizeYears(d.years);
 
     return `
       <article class="card">
         <div class="card-media" style="background:linear-gradient(150deg, ${grad[0]}, ${grad[1]});">
           <div class="badge-row">
-            <span class="source-badge" style="background:${srcColor};">${d.source}</span>
+            <span class="source-badge" style="background:${srcColor};">${srcLabel(d.source)}</span>
             ${pct > 0 ? `<span class="discount-badge">-${pct}%</span>` : ""}
           </div>
           <span aria-hidden="true">${icon}</span>
         </div>
         <div class="card-body">
-          <div class="card-cat">${d.category}</div>
+          <div class="card-cat">${catLabel(d.category)}</div>
           <h3 class="card-title">${escapeHTML(d.title)}</h3>
           <div class="card-brand">${escapeHTML(d.brand)} · ${escapeHTML(d.retailer)}</div>
-          <p class="card-desc">${escapeHTML(d.description)}</p>
+          <p class="card-desc">${escapeHTML(descText(d))}</p>
           <div class="card-meta">
             <span class="meta-tag">${yearsLabel}</span>
             ${doors}
@@ -172,7 +183,7 @@
               <span class="price-now">${money(d.price)}</span>
               ${d.originalPrice && d.originalPrice > d.price ? `<span class="price-was">${money(d.originalPrice)}</span>` : ""}
             </div>
-            <a class="buy-btn" href="${d.url}" target="_blank" rel="noopener noreferrer">View deal ↗</a>
+            <a class="buy-btn" href="${d.url}" target="_blank" rel="noopener noreferrer">${t("viewDeal")} ↗</a>
           </div>
         </div>
       </article>`;
@@ -198,22 +209,22 @@
     el.grid.innerHTML = list.map(cardHTML).join("");
     el.empty.hidden = list.length !== 0;
 
-    el.count.innerHTML = `Showing <strong>${list.length}</strong> of ${DEALS.length} deals`;
+    el.count.innerHTML = `${t("showingPre")} <strong>${list.length}</strong> ${t("showingMid")} ${DEALS.length} ${t("showingPost")}`;
 
     renderActiveFilters();
   }
 
   function renderActiveFilters() {
     const pills = [];
-    if (state.year) pills.push(pill(`Year: ${state.year}`, () => { state.year = ""; el.year.value = ""; render(); }));
+    if (state.year) pills.push(pill(`${t("year")}: ${state.year}`, () => { state.year = ""; el.year.value = ""; render(); }));
     state.categories.forEach((c) =>
-      pills.push(pill(c, () => { state.categories.delete(c); syncChips(); render(); }))
+      pills.push(pill(catLabel(c), () => { state.categories.delete(c); syncChips(); render(); }))
     );
     state.sources.forEach((s) =>
-      pills.push(pill(s, () => { state.sources.delete(s); syncChips(); render(); }))
+      pills.push(pill(srcLabel(s), () => { state.sources.delete(s); syncChips(); render(); }))
     );
-    if (state.israelOnly) pills.push(pill("Ships to Israel", () => { state.israelOnly = false; el.israel.checked = false; render(); }));
-    if (state.dealsOnly) pills.push(pill("On sale", () => { state.dealsOnly = false; el.deal.checked = false; render(); }));
+    if (state.israelOnly) pills.push(pill(t("shipsYes"), () => { state.israelOnly = false; el.israel.checked = false; render(); }));
+    if (state.dealsOnly) pills.push(pill(t("onSale"), () => { state.dealsOnly = false; el.deal.checked = false; render(); }));
     if (state.maxPrice < PRICE_MAX) pills.push(pill(`≤ ${money(state.maxPrice)}`, () => { state.maxPrice = PRICE_MAX; el.priceRange.value = PRICE_MAX; updatePriceLabel(); render(); }));
     if (state.search) pills.push(pill(`"${state.search}"`, () => { state.search = ""; el.search.value = ""; render(); }));
 
@@ -247,14 +258,15 @@
   }
 
   /* ============================ Chips ============================ */
-  function buildChips(container, values, stateSet) {
+  function buildChips(container, values, stateSet, labelFn) {
     container.innerHTML = "";
     values.forEach((val) => {
       const chip = document.createElement("button");
       chip.className = "chip";
       chip.type = "button";
       chip.dataset.value = val;
-      chip.textContent = (CATEGORY_ICONS[val] ? CATEGORY_ICONS[val] + " " : "") + val;
+      chip.textContent = labelFn(val);
+      if (stateSet.has(val)) chip.classList.add("active");
       chip.addEventListener("click", () => {
         if (stateSet.has(val)) stateSet.delete(val);
         else stateSet.add(val);
@@ -263,6 +275,31 @@
       });
       container.appendChild(chip);
     });
+  }
+
+  /* ============================ Language ============================ */
+  function applyLanguage(lang) {
+    LANG = lang;
+    localStorage.setItem("bronco-lang", lang);
+    const dict = window.I18N[lang] || window.I18N.en;
+
+    document.documentElement.setAttribute("lang", lang);
+    document.documentElement.setAttribute("dir", dict.dir || "ltr");
+
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.dataset.i18n;
+      if (dict[key] != null) node.textContent = dict[key];
+    });
+    document.querySelectorAll("[data-i18n-ph]").forEach((node) => {
+      const key = node.dataset.i18nPh;
+      if (dict[key] != null) node.placeholder = dict[key];
+    });
+
+    // Rebuild chips with translated labels (selection is preserved via stateSet)
+    buildChips(el.categoryChips, CATEGORIES, state.categories, catChipLabel);
+    buildChips(el.sourceChips, SOURCES, state.sources, srcChipLabel);
+
+    render();
   }
 
   function syncChips() {
@@ -305,10 +342,6 @@
     el.priceMaxLabel.textContent = money(PRICE_MAX) + "+";
     updatePriceLabel();
 
-    // Chips
-    buildChips(el.categoryChips, CATEGORIES, state.categories);
-    buildChips(el.sourceChips, SOURCES, state.sources);
-
     // Events
     el.search.addEventListener("input", (e) => { state.search = e.target.value.trim(); render(); });
     el.year.addEventListener("change", (e) => { state.year = e.target.value; render(); });
@@ -323,9 +356,13 @@
       document.getElementById("filters").scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
+    document.getElementById("langToggle").addEventListener("click", () => {
+      applyLanguage(LANG === "en" ? "he" : "en");
+    });
+
     initTheme();
     renderStats();
-    render();
+    applyLanguage(LANG); // builds chips (translated), applies strings, and renders
   }
 
   function resetFilters() {

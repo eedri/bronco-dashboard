@@ -16,11 +16,14 @@
         <span class="brand-mark">🛻</span>
         <div class="brand-text">
           <h1>Bronco<span class="accent">Deals</span></h1>
-          <p class="tagline">Overlanding &amp; accessory deals · 2021–2026 Ford Bronco</p>
+          <p class="tagline" data-i18n="tagline">Overlanding &amp; accessory deals · 2021–2026 Ford Bronco</p>
         </div>
       </div>
       <div class="header-actions">
-        <a class="header-link" href="#" id="scrollFilters">Filters</a>
+        <a class="header-link" href="#" id="scrollFilters" data-i18n="headerFilters">Filters</a>
+        <button id="langToggle" class="lang-toggle" aria-label="Switch language / החלף שפה" title="English / עברית">
+          <span class="lang-icon">🌐</span><span class="lang-text" data-i18n="langButton">עברית</span>
+        </button>
         <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark">
           <span class="theme-icon">🌙</span>
         </button>
@@ -31,16 +34,16 @@
   <!-- ===== Hero / stats ===== -->
   <section class="hero">
     <div class="hero-inner">
-      <h2 class="hero-title">Find the best gear for your Bronco build</h2>
-      <p class="hero-sub">
+      <h2 class="hero-title" data-i18n="heroTitle">Find the best gear for your Bronco build</h2>
+      <p class="hero-sub" data-i18n="heroSub">
         Aggregated from Amazon, AliExpress, Temu, brand stores &amp; social communities.
         Filter by model year, category, price, source and whether it ships to Israel 🇮🇱.
       </p>
       <div class="stats" id="statBar">
-        <div class="stat"><span class="stat-num" id="statTotal">–</span><span class="stat-label">Deals</span></div>
-        <div class="stat"><span class="stat-num" id="statAvgDiscount">–</span><span class="stat-label">Avg. discount</span></div>
-        <div class="stat"><span class="stat-num" id="statSources">–</span><span class="stat-label">Sources</span></div>
-        <div class="stat"><span class="stat-num" id="statIsrael">–</span><span class="stat-label">Ship to 🇮🇱</span></div>
+        <div class="stat"><span class="stat-num" id="statTotal">–</span><span class="stat-label" data-i18n="statDeals">Deals</span></div>
+        <div class="stat"><span class="stat-num" id="statAvgDiscount">–</span><span class="stat-label" data-i18n="statDiscount">Avg. discount</span></div>
+        <div class="stat"><span class="stat-num" id="statSources">–</span><span class="stat-label" data-i18n="statSources">Sources</span></div>
+        <div class="stat"><span class="stat-num" id="statIsrael">–</span><span class="stat-label" data-i18n="statIsrael">Ship to 🇮🇱</span></div>
       </div>
     </div>
   </section>
@@ -50,19 +53,19 @@
     <!-- Sidebar filters -->
     <aside class="filters" id="filters">
       <div class="filters-head">
-        <h3>Filters</h3>
-        <button id="resetFilters" class="reset-btn">Reset</button>
+        <h3 data-i18n="filters">Filters</h3>
+        <button id="resetFilters" class="reset-btn" data-i18n="reset">Reset</button>
       </div>
 
       <div class="filter-group">
-        <label class="filter-label" for="searchInput">Search</label>
-        <input type="search" id="searchInput" class="search-input" placeholder="Rack, awning, ARB, fridge…" />
+        <label class="filter-label" for="searchInput" data-i18n="search">Search</label>
+        <input type="search" id="searchInput" class="search-input" data-i18n-ph="searchPlaceholder" placeholder="Rack, awning, ARB, fridge…" />
       </div>
 
       <div class="filter-group">
-        <label class="filter-label" for="yearSelect">Model year</label>
+        <label class="filter-label" for="yearSelect" data-i18n="modelYear">Model year</label>
         <select id="yearSelect" class="select">
-          <option value="">All years (2021–2026)</option>
+          <option value="" data-i18n="allYears">All years (2021–2026)</option>
           <option value="2021">2021</option>
           <option value="2022">2022</option>
           <option value="2023">2023</option>
@@ -73,18 +76,18 @@
       </div>
 
       <div class="filter-group">
-        <span class="filter-label">Category</span>
+        <span class="filter-label" data-i18n="category">Category</span>
         <div class="chip-group" id="categoryChips"></div>
       </div>
 
       <div class="filter-group">
-        <span class="filter-label">Source</span>
+        <span class="filter-label" data-i18n="source">Source</span>
         <div class="chip-group" id="sourceChips"></div>
       </div>
 
       <div class="filter-group">
         <label class="filter-label" for="priceRange">
-          Max price: <span id="priceValue" class="price-value"></span>
+          <span data-i18n="maxPrice">Max price:</span> <span id="priceValue" class="price-value"></span>
         </label>
         <input type="range" id="priceRange" class="range" min="0" max="100" step="1" value="100" />
         <div class="range-scale"><span>$0</span><span id="priceMaxLabel"></span></div>
@@ -94,7 +97,7 @@
         <label class="toggle">
           <input type="checkbox" id="israelToggle" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          <span class="toggle-text">Ships to Israel 🇮🇱 only</span>
+          <span class="toggle-text" data-i18n="israelOnly">Ships to Israel 🇮🇱 only</span>
         </label>
       </div>
 
@@ -102,7 +105,7 @@
         <label class="toggle">
           <input type="checkbox" id="dealToggle" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          <span class="toggle-text">On sale only</span>
+          <span class="toggle-text" data-i18n="onSaleOnly">On sale only</span>
         </label>
       </div>
     </aside>
@@ -112,13 +115,13 @@
       <div class="results-bar">
         <p class="results-count" id="resultsCount">Loading…</p>
         <div class="sort-wrap">
-          <label for="sortSelect">Sort</label>
+          <label for="sortSelect" data-i18n="sort">Sort</label>
           <select id="sortSelect" class="select select-sm">
-            <option value="discount">Biggest discount</option>
-            <option value="price-asc">Price: low to high</option>
-            <option value="price-desc">Price: high to low</option>
-            <option value="rating">Top rated</option>
-            <option value="name">Name A–Z</option>
+            <option value="discount" data-i18n="sortDiscount">Biggest discount</option>
+            <option value="price-asc" data-i18n="sortPriceAsc">Price: low to high</option>
+            <option value="price-desc" data-i18n="sortPriceDesc">Price: high to low</option>
+            <option value="rating" data-i18n="sortRating">Top rated</option>
+            <option value="name" data-i18n="sortName">Name A–Z</option>
           </select>
         </div>
       </div>
@@ -129,9 +132,9 @@
 
       <div class="empty" id="emptyState" hidden>
         <span class="empty-icon">🏜️</span>
-        <h3>No deals match your filters</h3>
-        <p>Try widening the price range or clearing a filter.</p>
-        <button class="reset-btn" onclick="document.getElementById('resetFilters').click()">Reset filters</button>
+        <h3 data-i18n="emptyTitle">No deals match your filters</h3>
+        <p data-i18n="emptyBody">Try widening the price range or clearing a filter.</p>
+        <button class="reset-btn" data-i18n="resetFilters" onclick="document.getElementById('resetFilters').click()">Reset filters</button>
       </div>
     </main>
   </div>
@@ -139,17 +142,18 @@
   <!-- ===== Footer ===== -->
   <footer class="site-footer">
     <div class="footer-inner">
-      <p>
+      <p data-i18n="footer1">
         <strong>BroncoDeals</strong> is an independent deal aggregator for 2021–2026 Ford Bronco
         overlanding gear. Prices and availability change — always confirm on the retailer's site.
       </p>
       <p class="footer-meta">
-        Marketplace links open live search results. Not affiliated with Ford Motor Company.
-        Dataset last updated <span id="lastUpdated">—</span>.
+        <span data-i18n="footer2Pre">Marketplace links open live search results. Not affiliated with Ford Motor Company. Dataset last updated</span>
+        <span id="lastUpdated">—</span>.
       </p>
     </div>
   </footer>
 
+  <script src="assets/i18n.js"></script>
   <script src="assets/data.js"></script>
   <script src="assets/app.js"></script>
 </body>

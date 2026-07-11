@@ -17,6 +17,9 @@ filter it down to exactly what fits your build.
   - **Ships to Israel 🇮🇱** — toggle to only show items that deliver to Israel
   - **On-sale only** — toggle to only show discounted items
   - **Full-text search** across titles, brands, tags and descriptions
+- **Bilingual 🇬🇧 / 🇮🇱** — one-click switch between **English and Hebrew**, with full
+  right-to-left (RTL) layout, translated UI, categories and product descriptions. The choice is
+  remembered via `localStorage`. (Brand and product names stay in English.)
 - **Sorting** — biggest discount, price (low/high), top rated, name
 - **Live stats** — total deals, average discount, source count, ships-to-Israel count
 - **Removable active-filter pills** so you always see what's applied
@@ -52,8 +55,9 @@ default branch. To enable it: **Settings → Pages → Build and deployment → 
 bronco-dashboard/
 ├── index.html          # page markup
 ├── assets/
-│   ├── styles.css      # theme + layout (light/dark)
-│   ├── app.js          # filtering, sorting, rendering, theme
+│   ├── styles.css      # theme + layout (light/dark, LTR/RTL)
+│   ├── app.js          # filtering, sorting, rendering, theme, language
+│   ├── i18n.js         # English/Hebrew UI strings + translated descriptions
 │   └── data.js         # the deals dataset (edit this to add deals)
 └── .github/workflows/
     └── deploy.yml       # GitHub Pages deployment
