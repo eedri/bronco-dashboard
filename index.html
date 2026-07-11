@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aggregated overlanding & accessory deals for the 2021–2026 Ford Bronco. Filter by year, type, price, source and shipping to Israel." />
+  <title>Bronco Deals — Overlanding & Accessories for the 2021–2026 Ford Bronco</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%BB%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">🛻</span>
+        <div class="brand-text">
+          <h1>Bronco<span class="accent">Deals</span></h1>
+          <p class="tagline">Overlanding &amp; accessory deals · 2021–2026 Ford Bronco</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="header-link" href="#" id="scrollFilters">Filters</a>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero / stats ===== -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h2 class="hero-title">Find the best gear for your Bronco build</h2>
+      <p class="hero-sub">
+        Aggregated from Amazon, AliExpress, Temu, brand stores &amp; social communities.
+        Filter by model year, category, price, source and whether it ships to Israel 🇮🇱.
+      </p>
+      <div class="stats" id="statBar">
+        <div class="stat"><span class="stat-num" id="statTotal">–</span><span class="stat-label">Deals</span></div>
+        <div class="stat"><span class="stat-num" id="statAvgDiscount">–</span><span class="stat-label">Avg. discount</span></div>
+        <div class="stat"><span class="stat-num" id="statSources">–</span><span class="stat-label">Sources</span></div>
+        <div class="stat"><span class="stat-num" id="statIsrael">–</span><span class="stat-label">Ship to 🇮🇱</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Main layout ===== -->
+  <div class="layout">
+    <!-- Sidebar filters -->
+    <aside class="filters" id="filters">
+      <div class="filters-head">
+        <h3>Filters</h3>
+        <button id="resetFilters" class="reset-btn">Reset</button>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="searchInput">Search</label>
+        <input type="search" id="searchInput" class="search-input" placeholder="Rack, awning, ARB, fridge…" />
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="yearSelect">Model year</label>
+        <select id="yearSelect" class="select">
+          <option value="">All years (2021–2026)</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Category</span>
+        <div class="chip-group" id="categoryChips"></div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Source</span>
+        <div class="chip-group" id="sourceChips"></div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="priceRange">
+          Max price: <span id="priceValue" class="price-value"></span>
+        </label>
+        <input type="range" id="priceRange" class="range" min="0" max="100" step="1" value="100" />
+        <div class="range-scale"><span>$0</span><span id="priceMaxLabel"></span></div>
+      </div>
+
+      <div class="filter-group">
+        <label class="toggle">
+          <input type="checkbox" id="israelToggle" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-text">Ships to Israel 🇮🇱 only</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <label class="toggle">
+          <input type="checkbox" id="dealToggle" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-text">On sale only</span>
+        </label>
+      </div>
+    </aside>
+
+    <!-- Results -->
+    <main class="results">
+      <div class="results-bar">
+        <p class="results-count" id="resultsCount">Loading…</p>
+        <div class="sort-wrap">
+          <label for="sortSelect">Sort</label>
+          <select id="sortSelect" class="select select-sm">
+            <option value="discount">Biggest discount</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="rating">Top rated</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="active-filters" id="activeFilters"></div>
+
+      <div class="grid" id="dealGrid"></div>
+
+      <div class="empty" id="emptyState" hidden>
+        <span class="empty-icon">🏜️</span>
+        <h3>No deals match your filters</h3>
+        <p>Try widening the price range or clearing a filter.</p>
+        <button class="reset-btn" onclick="document.getElementById('resetFilters').click()">Reset filters</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>
+        <strong>BroncoDeals</strong> is an independent deal aggregator for 2021–2026 Ford Bronco
+        overlanding gear. Prices and availability change — always confirm on the retailer's site.
+      </p>
+      <p class="footer-meta">
+        Marketplace links open live search results. Not affiliated with Ford Motor Company.
+        Dataset last updated <span id="lastUpdated">—</span>.
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
