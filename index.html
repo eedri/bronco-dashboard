@@ -86,6 +86,13 @@
       </div>
 
       <div class="filter-group">
+        <label class="filter-label" for="brandSelect" data-i18n="manufacturer">Manufacturer</label>
+        <select id="brandSelect" class="select">
+          <option value="" data-i18n="allManufacturers">All manufacturers</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
         <label class="filter-label" for="priceRange">
           <span data-i18n="maxPrice">Max price:</span> <span id="priceValue" class="price-value"></span>
         </label>
@@ -117,6 +124,7 @@
         <div class="sort-wrap">
           <label for="sortSelect" data-i18n="sort">Sort</label>
           <select id="sortSelect" class="select select-sm">
+            <option value="popularity" data-i18n="sortPopularity">Most popular</option>
             <option value="discount" data-i18n="sortDiscount">Biggest discount</option>
             <option value="price-asc" data-i18n="sortPriceAsc">Price: low to high</option>
             <option value="price-desc" data-i18n="sortPriceDesc">Price: high to low</option>

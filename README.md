@@ -13,6 +13,7 @@ filter it down to exactly what fits your build.
   - **Category / type** — roof racks, rooftop tents, awnings, MOLLE, lighting, recovery gear,
     fridges & power, air compressors, armor, interior, cargo, fuel & water, steps, social deals
   - **Source / website** — Amazon, AliExpress, Temu, direct brand stores, social communities
+  - **Manufacturer** — filter to a single brand (ARB, Front Runner, Smittybilt, …)
   - **Max price** — slider
   - **Ships to Israel 🇮🇱** — toggle to only show items that deliver to Israel
   - **On-sale only** — toggle to only show discounted items
@@ -20,7 +21,8 @@ filter it down to exactly what fits your build.
 - **Bilingual 🇬🇧 / 🇮🇱** — one-click switch between **English and Hebrew**, with full
   right-to-left (RTL) layout, translated UI, categories and product descriptions. The choice is
   remembered via `localStorage`. (Brand and product names stay in English.)
-- **Sorting** — biggest discount, price (low/high), top rated, name
+- **Sorting** — most popular (a transparent composite of rating, discount depth, named-brand
+  and confirmed-price signals), biggest discount, price (low/high), top rated, name
 - **Live stats** — total deals, average discount, source count, ships-to-Israel count
 - **Removable active-filter pills** so you always see what's applied
 - **Light / dark theme** (remembered via `localStorage`), rugged desert-inspired UI

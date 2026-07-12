@@ -73,6 +73,9 @@
   const SOURCES = ["Amazon", "AliExpress", "Temu", "Direct", "Social"].filter((s) =>
     DEALS.some((d) => d.source === s)
   );
+  const BRANDS = [...new Set(DEALS.map((d) => d.brand))].sort((a, b) =>
+    a.localeCompare(b)
+  );
   const PRICE_MAX = Math.ceil(Math.max(...DEALS.map((d) => d.price)) / 50) * 50;
 
   /* ---- Language ---- */
@@ -94,10 +97,11 @@
     year: "",
     categories: new Set(),
     sources: new Set(),
+    brand: "",
     maxPrice: PRICE_MAX,
     israelOnly: false,
     dealsOnly: false,
-    sort: "discount",
+    sort: "popularity",
   };
 
   /* ---- Elements ---- */
@@ -110,6 +114,7 @@
     year: document.getElementById("yearSelect"),
     categoryChips: document.getElementById("categoryChips"),
     sourceChips: document.getElementById("sourceChips"),
+    brand: document.getElementById("brandSelect"),
     priceRange: document.getElementById("priceRange"),
     priceValue: document.getElementById("priceValue"),
     priceMaxLabel: document.getElementById("priceMaxLabel"),
@@ -132,12 +137,23 @@
     return "★".repeat(full) + "☆".repeat(5 - full);
   }
 
+  // Popularity is a transparent composite of the signals we have: rating
+  // (primary), discount depth, a boost for named brands over generic sellers,
+  // and a nudge for items with a confirmed (non-estimated) price.
+  const GENERIC_BRAND = /generic|seller|local seller|community/i;
+  const popScore = (d) =>
+    (d.rating || 0) * 10 +
+    discountPct(d) * 0.4 +
+    (GENERIC_BRAND.test(d.brand) ? 0 : 6) +
+    (d.estimated ? 0 : 3);
+
   /* ============================ Filtering ============================ */
   function applyFilters() {
     let list = DEALS.filter((d) => {
       if (state.year && !d.years.includes(Number(state.year))) return false;
       if (state.categories.size && !state.categories.has(d.category)) return false;
       if (state.sources.size && !state.sources.has(d.source)) return false;
+      if (state.brand && d.brand !== state.brand) return false;
       if (d.price > state.maxPrice) return false;
       if (state.israelOnly && !d.shipsToIsrael) return false;
       if (state.dealsOnly && discountPct(d) === 0) return false;
@@ -157,8 +173,9 @@
         case "price-desc": return b.price - a.price;
         case "rating": return (b.rating || 0) - (a.rating || 0);
         case "name": return a.title.localeCompare(b.title);
-        case "discount":
-        default: return discountPct(b) - discountPct(a) || a.price - b.price;
+        case "discount": return discountPct(b) - discountPct(a) || a.price - b.price;
+        case "popularity":
+        default: return popScore(b) - popScore(a) || (b.rating || 0) - (a.rating || 0);
       }
     });
 
@@ -256,6 +273,7 @@
     state.sources.forEach((s) =>
       pills.push(pill(srcLabel(s), () => { state.sources.delete(s); syncChips(); render(); }))
     );
+    if (state.brand) pills.push(pill(state.brand, () => { state.brand = ""; el.brand.value = ""; render(); }));
     if (state.israelOnly) pills.push(pill(t("shipsYes"), () => { state.israelOnly = false; el.israel.checked = false; render(); }));
     if (state.dealsOnly) pills.push(pill(t("onSale"), () => { state.dealsOnly = false; el.deal.checked = false; render(); }));
     if (state.maxPrice < PRICE_MAX) pills.push(pill(`≤ ${money(state.maxPrice)}`, () => { state.maxPrice = PRICE_MAX; el.priceRange.value = PRICE_MAX; updatePriceLabel(); render(); }));
@@ -375,9 +393,18 @@
     el.priceMaxLabel.textContent = money(PRICE_MAX) + "+";
     updatePriceLabel();
 
+    // Manufacturer options (append after the translated "All manufacturers")
+    BRANDS.forEach((b) => {
+      const opt = document.createElement("option");
+      opt.value = b;
+      opt.textContent = b;
+      el.brand.appendChild(opt);
+    });
+
     // Events
     el.search.addEventListener("input", (e) => { state.search = e.target.value.trim(); render(); });
     el.year.addEventListener("change", (e) => { state.year = e.target.value; render(); });
+    el.brand.addEventListener("change", (e) => { state.brand = e.target.value; render(); });
     el.priceRange.addEventListener("input", () => { state.maxPrice = Number(el.priceRange.value); updatePriceLabel(); render(); });
     el.israel.addEventListener("change", (e) => { state.israelOnly = e.target.checked; render(); });
     el.deal.addEventListener("change", (e) => { state.dealsOnly = e.target.checked; render(); });
@@ -403,17 +430,19 @@
     state.year = "";
     state.categories.clear();
     state.sources.clear();
+    state.brand = "";
     state.maxPrice = PRICE_MAX;
     state.israelOnly = false;
     state.dealsOnly = false;
-    state.sort = "discount";
+    state.sort = "popularity";
 
     el.search.value = "";
     el.year.value = "";
+    el.brand.value = "";
     el.priceRange.value = PRICE_MAX;
     el.israel.checked = false;
     el.deal.checked = false;
-    el.sort.value = "discount";
+    el.sort.value = "popularity";
     updatePriceLabel();
     syncChips();
     render();
